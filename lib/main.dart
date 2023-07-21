@@ -1,4 +1,6 @@
+import 'package:aplikacja_sportowa/drugi_widok.dart';
 import 'package:aplikacja_sportowa/glowny_widok.dart';
+import 'package:aplikacja_sportowa/routes.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -10,8 +12,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       home: GlownyWidok(),
+      routes: {
+        drugiWidok: (context) => const DrugiWidok(),
+        glownyWidok: (context) => const GlownyWidok(),
+      },
     );
   }
 }
