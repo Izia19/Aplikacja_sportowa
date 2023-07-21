@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>525336553036-v9817h3s34c682plhs0801d5tdmgf3vk.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.525336553036-v9817h3s34c682plhs0801d5tdmgf3vk</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCdI6kipOCLO3BKPKjgCNKU36s1mXX1mAo</string>
+	<key>GCM_SENDER_ID</key>
+	<string>525336553036</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.aplikacjaSportowa.RunnerTests</string>
+	<key>PROJECT_ID</key>
+	<string>aplikacja-sportowa-ac07c</string>
+	<key>STORAGE_BUCKET</key>
+	<string>aplikacja-sportowa-ac07c.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:525336553036:ios:6b2c339c1a3e4aa4e576e9</string>
+	<key>DATABASE_URL</key>
+	<string>https://aplikacja-sportowa-ac07c-default-rtdb.europe-west1.firebasedatabase.app</string>
+</dict>
+</plist>

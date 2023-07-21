@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "525336553036",
+    "firebase_url": "https://aplikacja-sportowa-ac07c-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "aplikacja-sportowa-ac07c",
+    "storage_bucket": "aplikacja-sportowa-ac07c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:525336553036:android:614bead43c8c7efae576e9",
+        "android_client_info": {
+          "package_name": "com.example.aplikacja_sportowa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "525336553036-o1cri5ahdsde9hjfpcm3s51rqpjuqkpc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjjJkmkHWF_CJanf4QTiMKY_0pCgmiUyI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "525336553036-o1cri5ahdsde9hjfpcm3s51rqpjuqkpc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
