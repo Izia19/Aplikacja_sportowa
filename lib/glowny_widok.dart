@@ -1,5 +1,8 @@
+import 'package:aplikacja_sportowa/dodawanie_do_bazy.dart';
 import 'package:aplikacja_sportowa/routes.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 //! Pierwszy widok
 class GlownyWidok extends StatefulWidget {
@@ -16,7 +19,7 @@ class _GlownyWidokState extends State<GlownyWidok> {
   late final int id = 1;
   String rodzaj_aktywnosci = "chodzenie";
   int czas_trwania = 0;
-  late final int pokonany_dystans;
+  int pokonany_dystans = 0;
 
   String czasTreningu(
       TimeOfDay? _godzina_rozpoczecia, TimeOfDay? _godzina_zakonczenia) {
@@ -34,7 +37,6 @@ class _GlownyWidokState extends State<GlownyWidok> {
     );
 
     final difference = godzina_zakonczeniaTime - _godzina_rozpoczeniaTime;
-
     czas_trwania = difference.inMinutes;
 
     if (czas_trwania < 0) {
@@ -50,95 +52,172 @@ class _GlownyWidokState extends State<GlownyWidok> {
         title: const Text('Aplikacja sportowa'),
       ),
       body: Center(
-        child: Column(
-          children: [
-            const Text(
-              "Dodaj nowa aktywnosc",
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  "Rodzaj aktywności: ",
-                  style: TextStyle(fontSize: 20),
-                ),
-                DropdownButton<String>(
-                  value: rodzaj_aktywnosci,
-                  onChanged: (String? newValue) {
-                    setState(
-                      () {
-                        rodzaj_aktywnosci = newValue!;
-                      },
-                    );
-                  },
-                  items: <String>['chodzenie', 'bieganie', 'rower', 'pływanie']
-                      .map(
-                    (String opcja) {
-                      return DropdownMenuItem<String>(
-                        value: opcja,
-                        child: Text(opcja),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              const Text(
+                "Dodaj nowa aktywnosc",
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+              ),
+              //* Linia 1
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Rodzaj aktywności: ",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  DropdownButton<String>(
+                    value: rodzaj_aktywnosci,
+                    onChanged: (String? nowaWartosc) {
+                      setState(
+                        () {
+                          rodzaj_aktywnosci = nowaWartosc!;
+                        },
                       );
                     },
-                  ).toList(),
-                ),
-              ],
-            ),
-
-            // Wybór czasu trwania
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  "Godzina rozpoczecia i zakonczenia trenungu: ",
-                  style: TextStyle(fontSize: 20),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    _godzinaRozpoczecia(context);
-                  },
-                  child: Text(godzina_rozpoczecia != null
-                      ? '${godzina_rozpoczecia!.hour}:${godzina_rozpoczecia!.minute}'
-                      : 'Godzina rozpoczecia'),
-                ),
-                const Text(
-                  " - ",
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    _godzinaZakonczenia(context);
-                  },
-                  child: Text(godzina_zakonczenia != null
-                      ? '${godzina_zakonczenia!.hour}:${godzina_zakonczenia!.minute}'
-                      : 'Godzina zakonczenia'),
-                ),
-              ],
-            ),
-            Text(
-              czasTreningu(
-                godzina_rozpoczecia,
-                godzina_zakonczenia,
+                    items: <String>[
+                      'chodzenie',
+                      'bieganie',
+                      'rower',
+                      'pływanie'
+                    ].map(
+                      (String opcja) {
+                        return DropdownMenuItem<String>(
+                          value: opcja,
+                          child: Text(opcja),
+                        );
+                      },
+                    ).toList(),
+                  ),
+                ],
               ),
-              style: const TextStyle(fontSize: 14),
-            ),
-            const Text(
-              "Rodzaj aktywnosci: ",
-              style: TextStyle(fontSize: 20),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(
-                    context, drugiWidok); // Przenosi na drugi widok
-              },
-              child: const Text('Dodaj trening'),
-            ),
-          ],
+              //* Linia 2
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Godzina rozpoczecia i zakonczenia treningu: ",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      _godzinaRozpoczecia(context);
+                    },
+                    child: Text(godzina_rozpoczecia != null
+                        ? '${godzina_rozpoczecia!.hour}:${godzina_rozpoczecia!.minute}'
+                        : 'Godzina rozpoczecia'),
+                  ),
+                  const Text(
+                    " - ",
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      _godzinaZakonczenia(context);
+                    },
+                    child: Text(godzina_zakonczenia != null
+                        ? '${godzina_zakonczenia!.hour}:${godzina_zakonczenia!.minute}'
+                        : 'Godzina zakonczenia'),
+                  ),
+                ],
+              ),
+              Text(
+                czasTreningu(
+                  godzina_rozpoczecia,
+                  godzina_zakonczenia,
+                ),
+                style: const TextStyle(fontSize: 14),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 20.0, horizontal: 50.0),
+                child: Row(
+                  children: [
+                    const Text(
+                      "Przebyty dystans: ",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    Expanded(
+                      child: TextField(
+                        keyboardType: TextInputType.number,
+                        onChanged: (value) {
+                          setState(() {
+                            pokonany_dystans = int.tryParse(value)!;
+                          });
+                        },
+                        decoration: const InputDecoration(
+                          labelText: 'Dystans',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ),
+                    const Text(
+                      " metrów ",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ],
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  if (godzina_rozpoczecia == null ||
+                      godzina_zakonczenia == null ||
+                      pokonany_dystans == 0 ||
+                      czas_trwania < 0 ||
+                      rodzaj_aktywnosci.isEmpty) {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Błąd'),
+                          content:
+                              const Text('Uzupełnij wszystkie wymagane pola.'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  } else {
+                    Timestamp timestamp = timeOfDayToTimestamp(
+                      godzina_rozpoczecia!,
+                    );
+                    dodajDane(
+                      czas_trwania,
+                      pokonany_dystans,
+                      timestamp,
+                      rodzaj_aktywnosci,
+                    );
+                    Navigator.pushNamed(
+                      context,
+                      drugiWidok,
+                    );
+                  }
+                },
+                child: const Text('Dodaj trening'),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
+  Timestamp timeOfDayToTimestamp(TimeOfDay timeOfDay) {
+    final now = DateTime.now();
+    final dateTime = DateTime(
+        now.year, now.month, now.day, timeOfDay.hour, timeOfDay.minute);
+    return Timestamp.fromDate(dateTime);
+  }
+
+  //! Metoda do wybierania godziny rozpoczecia
   Future<void> _godzinaRozpoczecia(BuildContext context) async {
     final TimeOfDay? wybranaGodzinaTemp = await showTimePicker(
       context: context,
@@ -147,12 +226,15 @@ class _GlownyWidokState extends State<GlownyWidok> {
 
     if (wybranaGodzinaTemp != null &&
         wybranaGodzinaTemp != godzina_rozpoczecia) {
-      setState(() {
-        godzina_rozpoczecia = wybranaGodzinaTemp;
-      });
+      setState(
+        () {
+          godzina_rozpoczecia = wybranaGodzinaTemp;
+        },
+      );
     }
   }
 
+  //! Metoda do wybierania godziny zakonczenia
   Future<void> _godzinaZakonczenia(BuildContext context) async {
     final TimeOfDay? wybranaGodzinaTemp = await showTimePicker(
       context: context,
@@ -161,9 +243,11 @@ class _GlownyWidokState extends State<GlownyWidok> {
 
     if (wybranaGodzinaTemp != null &&
         wybranaGodzinaTemp != godzina_zakonczenia) {
-      setState(() {
-        godzina_zakonczenia = wybranaGodzinaTemp;
-      });
+      setState(
+        () {
+          godzina_zakonczenia = wybranaGodzinaTemp;
+        },
+      );
     }
   }
 }
