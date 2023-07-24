@@ -16,30 +16,38 @@ class _GlownyWidokState extends State<GlownyWidok> {
   //! Godziny
   TimeOfDay? godzina_rozpoczecia = TimeOfDay.now();
   TimeOfDay? godzina_zakonczenia = TimeOfDay.now();
-  late final int id = 1;
+
+  //! Reszta wartosci
   String rodzaj_aktywnosci = "chodzenie";
   int czas_trwania = 0;
   int pokonany_dystans = 0;
 
+  //! Metoda obliczajaca czas treningu
   String czasTreningu(
-      TimeOfDay? _godzina_rozpoczecia, TimeOfDay? _godzina_zakonczenia) {
+    TimeOfDay? _godzina_rozpoczecia,
+    TimeOfDay? _godzina_zakonczenia,
+  ) {
     if (_godzina_rozpoczecia == null || _godzina_zakonczenia == null) {
       return "Brak danych";
     }
 
+    //? Godzina rozpoczecia (godziny i minuty)
     final _godzina_rozpoczeniaTime = Duration(
       hours: _godzina_rozpoczecia.hour,
       minutes: _godzina_rozpoczecia.minute,
     );
+
+    //? Godzina zakonczenia (godziny i minuty)
     final godzina_zakonczeniaTime = Duration(
       hours: _godzina_zakonczenia.hour,
       minutes: _godzina_zakonczenia.minute,
     );
 
     final difference = godzina_zakonczeniaTime - _godzina_rozpoczeniaTime;
-    czas_trwania = difference.inMinutes;
+    czas_trwania = difference.inMinutes; //? obliczanie czasu trwania treningu
 
     if (czas_trwania < 0) {
+      //? Jesli czas treningu jest mniejszy od zera jest nieprawidlowy
       return "Godziny treningu sa nieprawidlowe!";
     }
     return "Czas treningu: $czas_trwania minut,";
@@ -49,11 +57,12 @@ class _GlownyWidokState extends State<GlownyWidok> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Aplikacja sportowa'),
+        title: const Text('Aplikacja sportowa'), //? Tytuł
       ),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding:
+              const EdgeInsets.all(16.0), //? Margines o wartosci 16 pikseli
           child: Column(
             children: [
               const Text(
@@ -62,14 +71,17 @@ class _GlownyWidokState extends State<GlownyWidok> {
               ),
               //* Linia 1
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment
+                    .center, //? wyśrodkowane wzdłuż osi poziomej
                 children: [
                   const Text(
                     "Rodzaj aktywności: ",
                     style: TextStyle(fontSize: 20),
                   ),
+                  //! Lista z wybranymi itemami
                   DropdownButton<String>(
-                    value: rodzaj_aktywnosci,
+                    value:
+                        rodzaj_aktywnosci, //? Wybrana wartosc bedzie podpisana pod rodzaj_aktywnosci
                     onChanged: (String? nowaWartosc) {
                       setState(
                         () {
@@ -77,11 +89,12 @@ class _GlownyWidokState extends State<GlownyWidok> {
                         },
                       );
                     },
+                    //? itemy
                     items: <String>[
                       'chodzenie',
                       'bieganie',
                       'rower',
-                      'pływanie'
+                      'pływanie',
                     ].map(
                       (String opcja) {
                         return DropdownMenuItem<String>(
@@ -95,16 +108,20 @@ class _GlownyWidokState extends State<GlownyWidok> {
               ),
               //* Linia 2
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment
+                    .center, //? wyśrodkowane wzdłuż osi poziomej
                 children: [
                   const Text(
                     "Godzina rozpoczecia i zakonczenia treningu: ",
                     style: TextStyle(fontSize: 20),
                   ),
+                  //! Przycisk
                   ElevatedButton(
                     onPressed: () {
+                      //? Wywoluje metode
                       _godzinaRozpoczecia(context);
                     },
+                    //? Wyswietla godzine
                     child: Text(godzina_rozpoczecia != null
                         ? '${godzina_rozpoczecia!.hour}:${godzina_rozpoczecia!.minute}'
                         : 'Godzina rozpoczecia'),
@@ -113,10 +130,13 @@ class _GlownyWidokState extends State<GlownyWidok> {
                     " - ",
                     style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                   ),
+                  //! Przycisk
                   ElevatedButton(
                     onPressed: () {
+                      //? Wywoluje metode
                       _godzinaZakonczenia(context);
                     },
+                    //? Wyswietla godzine
                     child: Text(godzina_zakonczenia != null
                         ? '${godzina_zakonczenia!.hour}:${godzina_zakonczenia!.minute}'
                         : 'Godzina zakonczenia'),
@@ -124,6 +144,7 @@ class _GlownyWidokState extends State<GlownyWidok> {
                 ],
               ),
               Text(
+                //? Wywoluje metode
                 czasTreningu(
                   godzina_rozpoczecia,
                   godzina_zakonczenia,
@@ -132,7 +153,8 @@ class _GlownyWidokState extends State<GlownyWidok> {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(
-                    vertical: 20.0, horizontal: 50.0),
+                    vertical: 20.0, horizontal: 50.0), //? Marginesy
+                //* Linia 3
                 child: Row(
                   children: [
                     const Text(
@@ -144,11 +166,12 @@ class _GlownyWidokState extends State<GlownyWidok> {
                         keyboardType: TextInputType.number,
                         onChanged: (value) {
                           setState(() {
-                            pokonany_dystans = int.tryParse(value)!;
+                            pokonany_dystans =
+                                int.tryParse(value)!; //? Konwertowanie na int
                           });
                         },
                         decoration: const InputDecoration(
-                          labelText: 'Dystans',
+                          labelText: 'Dystans', //? Napis na polu
                           border: OutlineInputBorder(),
                         ),
                       ),
@@ -160,13 +183,16 @@ class _GlownyWidokState extends State<GlownyWidok> {
                   ],
                 ),
               ),
+              //! Przycisk
               ElevatedButton(
                 onPressed: () {
+                  //? Wrunki
                   if (godzina_rozpoczecia == null ||
                       godzina_zakonczenia == null ||
                       pokonany_dystans == 0 ||
                       czas_trwania < 0 ||
                       rodzaj_aktywnosci.isEmpty) {
+                    //? To co zostanie wyswietlone jesli warunki beda spelnione (okno)
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -175,6 +201,7 @@ class _GlownyWidokState extends State<GlownyWidok> {
                           content:
                               const Text('Uzupełnij wszystkie wymagane pola.'),
                           actions: [
+                            //! Przycisk
                             TextButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
@@ -186,15 +213,18 @@ class _GlownyWidokState extends State<GlownyWidok> {
                       },
                     );
                   } else {
+                    //? jesli warunki nie beda spelnione wywoluje metode
                     Timestamp timestamp = timeOfDayToTimestamp(
                       godzina_rozpoczecia!,
                     );
+                    //? wywoluje metode ktora dodaje dan do bazy danych
                     dodajDane(
                       czas_trwania,
                       pokonany_dystans,
                       timestamp,
                       rodzaj_aktywnosci,
                     );
+                    //? przechodzi do drugiego widoku
                     Navigator.pushNamed(
                       context,
                       drugiWidok,
@@ -210,10 +240,16 @@ class _GlownyWidokState extends State<GlownyWidok> {
     );
   }
 
+  //! Metoda konwertujaca TimeOdDay na Timestamp
   Timestamp timeOfDayToTimestamp(TimeOfDay timeOfDay) {
     final now = DateTime.now();
     final dateTime = DateTime(
-        now.year, now.month, now.day, timeOfDay.hour, timeOfDay.minute);
+      now.year,
+      now.month,
+      now.day,
+      timeOfDay.hour,
+      timeOfDay.minute,
+    );
     return Timestamp.fromDate(dateTime);
   }
 
