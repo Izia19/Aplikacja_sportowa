@@ -1,5 +1,6 @@
 import 'package:aplikacja_sportowa/dodawanie_do_bazy.dart';
-import 'package:aplikacja_sportowa/routes.dart';
+import 'package:aplikacja_sportowa/drugi_widok.dart';
+import 'package:aplikacja_sportowa/wyswietlanie_z_bazy.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +14,7 @@ class GlownyWidok extends StatefulWidget {
 }
 
 class _GlownyWidokState extends State<GlownyWidok> {
+  List<Map<String, dynamic>> daneZBazy = [];
   //! Godziny
   TimeOfDay? godzina_rozpoczecia = TimeOfDay.now();
   TimeOfDay? godzina_zakonczenia = TimeOfDay.now();
@@ -51,6 +53,13 @@ class _GlownyWidokState extends State<GlownyWidok> {
       return "Godziny treningu sa nieprawidlowe!";
     }
     return "Czas treningu: $czas_trwania minut,";
+  }
+
+  Future<void> aktualizacjaDanych(BuildContext context) async {
+    daneZBazy = await odczytajDane();
+    print(daneZBazy);
+    setState(
+        () {}); // Wywołanie setState spowoduje ponowną budowę widoku z nowymi danymi
   }
 
   @override
@@ -224,17 +233,42 @@ class _GlownyWidokState extends State<GlownyWidok> {
                       timestamp,
                       rodzaj_aktywnosci,
                     );
+                    aktualizacjaDanych(context);
                     //? przechodzi do drugiego widoku
-                    Navigator.pushNamed(
+                    Navigator.pushAndRemoveUntil(
                       context,
-                      drugiWidok,
+                      MaterialPageRoute(
+                        builder: (context) => DrugiWidok(
+                          daneZBazy: daneZBazy,
+                        ),
+                      ),
+                      (route) => route.isFirst,
                     );
+                    print(daneZBazy);
                   }
                 },
                 child: const Text('Dodaj trening'),
               ),
             ],
           ),
+        ),
+      ),
+      floatingActionButton: Align(
+        alignment: Alignment.bottomRight,
+        child: ElevatedButton(
+          onPressed: () {
+            aktualizacjaDanych(context);
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DrugiWidok(
+                  daneZBazy: daneZBazy,
+                ),
+              ),
+              (route) => route.isFirst,
+            );
+          },
+          child: const Text("Przejdz do statystyk"),
         ),
       ),
     );
