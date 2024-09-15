@@ -33,6 +33,116 @@ class _DrugiWidokState extends State<DrugiWidok> {
     });
   }
 
+  void _showEditDialog(
+    BuildContext context,
+    String documentId,
+    int czas_trwania,
+    int dystans,
+    String rodzaj_aktywnosci,
+    String formattedDate,
+  ) async {
+    // Pobierz dane do edycji z jakiegoś źródła (np. z bazy danych)
+    String _rodzaj_aktywnosci = rodzaj_aktywnosci;
+    String _czas_trwania = czas_trwania.toString();
+    String _dystans = dystans.toString();
+    String _formattedDate = formattedDate;
+
+    // Kontroler pola tekstowego, aby umożliwić edycję danych
+    TextEditingController pole_tekstowe1 =
+        TextEditingController(text: _rodzaj_aktywnosci);
+    TextEditingController pole_tekstowe2 =
+        TextEditingController(text: _czas_trwania);
+    TextEditingController pole_tekstowe3 =
+        TextEditingController(text: _dystans);
+    TextEditingController pole_tekstowe4 =
+        TextEditingController(text: _formattedDate);
+
+    // Wyświetl okno dialogowe
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Edytuj dane'),
+          content: Column(
+            children: [
+              TextFormField(
+                controller: pole_tekstowe1,
+              ),
+              const Text(
+                "Rodzaj aktywnosci",
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+              ),
+              TextFormField(
+                controller: pole_tekstowe2,
+              ),
+              const Text(
+                "Czas trwania",
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+              ),
+              TextFormField(
+                controller: pole_tekstowe3,
+              ),
+              const Text(
+                "Dystans (m)",
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+              ),
+              TextFormField(
+                controller: pole_tekstowe4,
+              ),
+              const Text(
+                "Data i czas rozpoczecia (min)",
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                // Zamknij okno dialogowe bez zapisu zmian
+                Navigator.of(context).pop();
+              },
+              child: const Text('ANULUJ'),
+            ),
+            TextButton(
+              onPressed: () {
+                // Tutaj możesz pobrać wartości z kontrolek (zmodyfikowane dane) i je zapisać
+                String nowe_rodzaj_aktywnosci = pole_tekstowe1.text;
+                String nowe_czas_trwania = pole_tekstowe2.text;
+                String nowe_dystans = pole_tekstowe3.text;
+                String nowe_formattedDate = pole_tekstowe4.text;
+
+                Map<String, dynamic> noweDane = {
+                  'rodzaj_aktywnosci': nowe_rodzaj_aktywnosci,
+                  'czas_trwania': int.parse(nowe_czas_trwania),
+                  'dystans': int.parse(nowe_dystans),
+                  'formattedDate': nowe_formattedDate,
+                  // Tutaj możesz dodać inne pola danych, jeśli są wymagane
+                };
+
+                // Wykonaj operacje zapisu danych do bazy danych lub gdziekolwiek indziej
+                // np. za pomocą swojej funkcji 'edytujDane' z wcześniejszego przykładu
+                // edytujDane(documentId, noweDane1, noweDane2, noweDane3);
+
+                // Zamknij okno dialogowe po zapisie zmian
+                edytujDane(documentId, noweDane).then((_) {
+                  // Operacje po zaktualizowaniu danych (jeśli potrzebne)
+
+                  // Zamknij okno dialogowe po zapisie zmian
+                  Navigator.of(context).pop();
+                }).catchError((error) {
+                  // Obsługa błędów w przypadku niepowodzenia edycji danych
+                  print('Wystąpił błąd podczas edycji danych: $error');
+                  // Tu możesz wyświetlić komunikat o błędzie lub podjąć inne działania
+                });
+              },
+              child: const Text('ZAPISZ'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     DateTime teraz = DateTime.now();
@@ -114,6 +224,19 @@ class _DrugiWidokState extends State<DrugiWidok> {
                                             child: const Text('USUN'),
                                           ),
                                           TextButton(
+                                            onPressed: () async {
+                                              _showEditDialog(
+                                                context,
+                                                documentId,
+                                                czas_trwania,
+                                                dystans,
+                                                rodzaj_aktywnosci,
+                                                formattedDate,
+                                              );
+                                            },
+                                            child: const Text('EDYTUJ'),
+                                          ),
+                                          TextButton(
                                             onPressed: () {
                                               Navigator.of(context).pop();
                                             },
@@ -136,6 +259,7 @@ class _DrugiWidokState extends State<DrugiWidok> {
                   );
                 }
               },
+              future: null,
             ),
           ),
         ],

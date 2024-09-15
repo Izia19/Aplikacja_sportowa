@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names, no_leading_underscores_for_local_identifiers
+
 import 'package:aplikacja_sportowa/dodawanie_do_bazy.dart';
 import 'package:aplikacja_sportowa/drugi_widok.dart';
 import 'package:aplikacja_sportowa/wyswietlanie_z_bazy.dart';
@@ -57,7 +59,6 @@ class _GlownyWidokState extends State<GlownyWidok> {
 
   Future<void> aktualizacjaDanych(BuildContext context) async {
     daneZBazy = await odczytajDane();
-    print(daneZBazy);
     setState(
         () {}); // Wywołanie setState spowoduje ponowną budowę widoku z nowymi danymi
   }
@@ -199,7 +200,7 @@ class _GlownyWidokState extends State<GlownyWidok> {
                   if (godzina_rozpoczecia == null ||
                       godzina_zakonczenia == null ||
                       pokonany_dystans == 0 ||
-                      czas_trwania < 0 ||
+                      czas_trwania <= 0 ||
                       rodzaj_aktywnosci.isEmpty) {
                     //? To co zostanie wyswietlone jesli warunki beda spelnione (okno)
                     showDialog(
@@ -244,7 +245,6 @@ class _GlownyWidokState extends State<GlownyWidok> {
                       ),
                       (route) => route.isFirst,
                     );
-                    print(daneZBazy);
                   }
                 },
                 child: const Text('Dodaj trening'),
